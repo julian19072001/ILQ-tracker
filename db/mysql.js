@@ -71,7 +71,7 @@ async function insertRow(db, table, user) {
 
     g.guildRaids?.list?.["The Canyon Colossus"] ?? 0,
     g.guildRaids?.list?.["Orphion's Nexus of Light"] ?? 0,
-    g.guildRaids?.list?.["Nest of the Grootslang"] ?? 0,
+    g.guildRaids?.list?.["Nest of the Grootslangs"] ?? 0,
     g.guildRaids?.list?.["The Nameless Anomaly"] ?? 0,
     g.guildRaids?.list?.["The Wartorn Palace"] ?? 0,
 

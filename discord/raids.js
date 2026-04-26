@@ -11,7 +11,7 @@ const RAID_DATA = {
     key: "orphion",
     image: "https://cdn.wynncraft.com/nextgen/leaderboard/icons/orphion_completion.webp"
   },
-  "Nest of the Grootslang": {
+  "Nest of the Grootslangs": {
     key: "grootslangs",
     image: "https://cdn.wynncraft.com/nextgen/leaderboard/icons/grootslang_completion.webp"
   },
@@ -40,12 +40,12 @@ async function sendWebhook(username, raidName, imageUrl) {
   });
 }
 
-async function handleRaids(user, last, raids) {
+async function handleRaids(user, last) {
   for (const raidName in RAID_DATA) {
     const data = RAID_DATA[raidName];
 
     const oldVal = last?.[data.key] || 0;
-    const newVal = raids?.[raidName] || 0;
+    const newVal = user.globalData?.guildRaids?.list?.[raidName] || 0;
 
     const diff = newVal - oldVal;
 
