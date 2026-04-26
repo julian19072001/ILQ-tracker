@@ -49,7 +49,7 @@ async function handleRaids(user, last) {
 
     const diff = newVal - oldVal;
 
-    if (diff > 0) {
+    if (diff > 0 && diff < 5) {
       for (let i = 0; i < diff; i++) {
         await sendWebhook(user.username, raidName, data.image);
       }
