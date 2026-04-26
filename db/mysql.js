@@ -88,10 +88,55 @@ async function insertRow(db, table, user) {
   ]);
 }
 
+async function getExistingUserTables(db) {
+  try {
+    const result = await db.execute(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = DATABASE()
+      AND table_name LIKE 'user\\_%'
+    `);
+
+    const rows = result[0];
+
+    if (!rows) {
+      console.log("⚠️ No rows returned from DB");
+      return [];
+    }
+
+    return rows.map(r => r.table_name);
+
+  } catch (e) {
+    console.error("getExistingUserTables error:", e);
+    return [];
+  }
+}
+
+async function cleanupUsers(db, apiUUIDs) {
+  const tables = await getExistingUserTables(db);
+
+  for (const table of tables) {
+    if (!table) continue; 
+    const uuid = table.replace("user_", "").replace(/_/g, "-");
+
+    if (!apiUUIDs.has(uuid)) {
+      console.log(`Removing old user: ${uuid}`);
+
+      await db.execute(`DROP TABLE \`${table}\``);
+
+      await db.execute(`
+        DELETE FROM setting_additional_info
+        WHERE uuid = ?
+      `, [uuid]);
+    }
+  }
+}
+
 module.exports = {
   createDb,
   getTableName,
   createTable,
   getLastRow,
-  insertRow
+  insertRow,
+  cleanupUsers
 };

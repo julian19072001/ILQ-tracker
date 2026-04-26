@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const { fetchGuild } = require("./wynncraft/api");
 const { getAllMembers } = require("./wynncraft/members");
-const { createDb, getTableName, createTable, getLastRow, insertRow } = require("./db/mysql");
+const { createDb, getTableName, createTable, getLastRow, insertRow, cleanupUsers } = require("./db/mysql");
 const { handleRaids } = require("./discord/raids");
 
 let running = false;
@@ -48,6 +48,10 @@ function scheduleNext(db, runCycle) {
 async function processData(db) {
   const data = await fetchGuild();
   const members = getAllMembers(data.members);
+
+  const apiUUIDs = new Set(members.map(u => u.uuid));
+
+  await cleanupUsers(db, apiUUIDs);
 
   console.log(`Users: ${members.length}`);
 
